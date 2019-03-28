@@ -2,8 +2,6 @@ package com.learning.springdemo.dao;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -22,9 +20,43 @@ public class CustomerDAOImpl implements CustomerDAO {
 	public List<Customer> getCustomers() {
 		
 		Session currentSession = sessionFactory.getCurrentSession();
-		Query<Customer> query = currentSession.createQuery("from Customer", Customer.class);		
+		Query<Customer> query = currentSession.createQuery("from Customer order by lastName", Customer.class);		
 		List<Customer> customers = query.getResultList();
 		return customers;
+	}
+
+	@Override
+	public void saveCustomer(Customer customer) {
+		Session currentSession = sessionFactory.getCurrentSession();
+		currentSession.saveOrUpdate(customer);
+	}
+
+	@Override
+	public Customer getCustomer(int id) {
+		Session currentSession = sessionFactory.getCurrentSession();
+		Customer customer = currentSession.get(Customer.class, id);
+		return customer;	
+	}
+
+	@Override
+	public void deleteCustomer(int id) {
+		Session currentSession = sessionFactory.getCurrentSession();
+		Query<Customer> query = currentSession.createQuery("delete from Customer where id=:customerId");
+		query.setParameter("customerId", id);
+		query.executeUpdate();
+	}
+
+	@Override
+	public List<Customer> searchCustomer(String searchField) {
+		if(searchField == null || searchField.trim() == "") {
+			return getCustomers();
+		}
+		Session currentSession = sessionFactory.getCurrentSession();
+		Query<Customer> query = currentSession.createQuery("from Customer where firstName like :searchField or lastName like :searchField order by lastName", Customer.class);		
+		query.setParameter("searchField", searchField);
+		List<Customer> customers = query.getResultList();
+		return customers;
+		
 	}
 
 }

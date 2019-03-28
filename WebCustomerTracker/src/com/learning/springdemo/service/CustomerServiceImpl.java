@@ -22,4 +22,28 @@ public class CustomerServiceImpl implements CustomerService {
 		return customerDao.getCustomers();
 	}
 
+	@Override
+	@Transactional
+	public void saveCustomer(Customer customer) {
+		customerDao.saveCustomer(customer);
+	}
+
+	@Override
+	@Transactional
+	public Customer getCustomer(int id) {
+		return customerDao.getCustomer(id);
+	}
+
+	@Override
+	@Transactional
+	public void deleteCustomer(int id) {
+		customerDao.deleteCustomer(id);		
+	}
+
+	@Override
+	@Transactional
+	public List<Customer> searchCustomer(String searchField) {
+		return customerDao.searchCustomer(searchField);	
+	}
+
 }
